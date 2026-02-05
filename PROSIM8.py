@@ -40,7 +40,6 @@ from typing import Optional
 import numpy
 from time import sleep
 
-__company__ = "Feas Electronica"
 __author__ = "Juan Cruz Noya & Julian Font"
 __version__ = "1.2.1"
 __country__ = "Argentina"

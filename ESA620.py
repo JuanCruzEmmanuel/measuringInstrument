@@ -4,7 +4,6 @@ import re
 
 __version__ = "1.4.2"
 __autor__ = "Juan Cruz Noya & Julian Font"
-__propietario__ = "Feas Electronica"
 
 """
 Version 1.2.3   Se elimina una linea de self.serial.decode() en mainAppliedParts(). Se busca corregir colgadas del puerto

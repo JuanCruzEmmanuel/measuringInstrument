@@ -7,7 +7,7 @@ Una vez esto, los comandos deben ser "los mismos" para todo los multimetros
 
 __autor__ = "Juan Cruz Noya"
 __version__ = "1.0.3"
-__propiedad__ = "Feas Electronica"
+
 
 
 """
