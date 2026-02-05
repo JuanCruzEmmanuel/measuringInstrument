@@ -1,13 +1,12 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from CONTROLADORES.Multimetro import Fluke45, Fluke8845
 from CONTROLADORES.DCPOWERSUPPLY import PSU
 from CONTROLADORES.IMPULSE7000 import IMPULSE7000
 from CONTROLADORES.ESA620 import ESA620
 from CONTROLADORES.OSCILOSCOPIO import TEKTRONIX
 from CONTROLADORES.PROSIM8 import PROSIM8
-from CONTROLADORES.GUIAPRESION import GUIAPRESION
 from CONTROLADORES.CARGAPROGRAMABLE import Load
 from CONTROLADORES.ident_devices import ident_devices, verify_connection
 import serial
@@ -19,7 +18,7 @@ __version__ ="1.3.0"
 
 __autor__ ="Juan Cruz Noya & Julian Font"
 
-__propiedad__ ="Feas Electronica"
+
 
 """
 Version 1.0.0   Se incia el driver
@@ -249,70 +248,7 @@ class CONTROLADOR_INSTURMENTO:
                 return get[action]()
         
         return "OK"
-    def guiaPresion(self,CMD:list):
-        """
-        UN EJEMPLO DE COMANDO DESDE EL SMVA SERIA *GuiaPresion --run ganancia --value 33761
-        """
-
-
-        instru = GUIAPRESION(port="COM24")
-        instru.connection() #Conecto el instrumento
-        prioridades = { #Es importante el orden donde se establecen ciertos parametros
-            "value":1,
-            "Value":1,
-            "Valor":1,
-            "valor":1,
-            "run": 2,
-            "Run":2
-        }
-
-        run_dic = {
-            "ganancia":instru.ganancia,
-            "gain":instru.ganancia,
-            "Gain":instru.ganancia,
-            "Ganancia":instru.ganancia,
-            "Pos":instru.posicionamiento,
-            "Posicion":instru.posicionamiento,
-            "pos":instru.posicionamiento
-        }
-
-        guia_presion_setter={
-            "value":instru.setValue,
-            "Value":instru.setValue,
-            "valor":instru.setValue,
-            "Valor":instru.setValue
-        }
-
-        def obtener_prioridad(elemento): #lo hago funcion para trabajar con la funcion lamda mas facil
-            palabras = elemento.split()
-        # Buscar la palabra clave que existe en las prioridades
-            for palabra in palabras:
-                if palabra.lower() in prioridades:
-                    return prioridades[palabra]
-        # Si no encuentra ninguna palabra clave, asignar una prioridad muy alta
-            return float('inf')
-        
-
-        CMD_SORTED = sorted(CMD,key=obtener_prioridad)
-        #print(CMD_SORTED)
-        for cmd in CMD_SORTED:
-            cmd = cmd.split(" ")
-            
-            if cmd[0] == "port":
-                pass
-            elif "run" in cmd[0].lower():
-                ejecutar = cmd[1] #Tomo el elemento por ejemplo gain
-
-            else: #En caso de no ser run, va a ser un setter 
-                guia_presion_setter[cmd[0]](value=cmd[1]) #En este caso va a setear el valor separado por el espacio
-
-        try:
-            exc = run_dic[ejecutar]()
-
-            return exc
-        except:
-            "EN CASO DE ERROR"
-            return "NO OK"
+    
     def impulse(self,CMD:list):
         port = next((COM for COM in CMD if "port" in COM.lower()), "COM14") #Se busca si encuentra el port si no lo localiza usa el valor por defecto
         try:
@@ -797,8 +733,7 @@ class DRIVER:
             "prosim":self.CONTROLADOR_INSTRUMENTO.prosim8,
             "PROSIM":self.CONTROLADOR_INSTRUMENTO.prosim8,
             "prosim8":self.CONTROLADOR_INSTRUMENTO.prosim8,
-            "GuiaPresion":self.CONTROLADOR_INSTRUMENTO.guiaPresion,
-            "GuiaDePresion":self.CONTROLADOR_INSTRUMENTO.guiaPresion
+
         }
         CMD = cmd.split(sep=" --")
         """
@@ -838,6 +773,7 @@ if __name__ == "__main__":
     #print(DRIVER(cmd = "psu --get volt"))
     #print(DRIVER("osc --vscale 2 --vpos 0 --run medicion --pos 1"))
     
-    
+    driver = DRIVER()
+    driver.run("ESA620 --run leaktest --lead 5 --pol N --neutro O")
 
 
